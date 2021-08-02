@@ -1,7 +1,7 @@
-# Docker image for Unity Editor
+# Podman (docker) image for Unity Editor
 ## Usage
 ```sh
-$ docker pull docker.io/unityci/editor:2021.1.16f1-windows-mono-0
+$ podman pull docker.io/unityci/editor:2021.1.16f1-windows-mono-0
 $ bash generate.sh
 $ make install  # build derived image
 $ make up  # run container
