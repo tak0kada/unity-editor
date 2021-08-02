@@ -1,0 +1,23 @@
+FROM ${IMG_NAME}
+
+RUN apt-get update && \
+    apt-get install sudo && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN useradd docker && \
+    printf 'docker ALL=(ALL) ALL\n' | tee -a /etc/sudoers && \
+    mkdir -p /home/docker && \
+    chown docker:docker /home/docker
+
+USER docker
+
+COPY *.ulf /home/docker/*.ulf
+
+RUN cd /home/docker && \
+    sudo -u docker /opt/unity/Editor/Unity \
+        -batchmode -nographics -quit -silent-crashes \
+        -manualLicenseFile /home/docker/*.ulf || :
+
+USER root
+RUN sed -i '/^docker ALL=(ALL) ALL/d' /etc/sudoers

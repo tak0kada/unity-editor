@@ -1,0 +1,57 @@
+.PHONY: help
+help:
+	cat Makefile
+
+
+if_no_ulf = $(shell [ ! -f *.ulf ] && echo ulf)
+.PHONY: install
+install: $(if_no_ulf)
+	podman build . -t tak0kada/unity-editor
+
+
+if_no_alf = $(shell [ ! -f *.alf ] && echo alf)
+.PHONY: ulf
+ulf: $(if_no_alf)
+	# manually download ulf file
+	read -p "$$(echo -e '1. Access https://license.unity3d.com/manual.\n2. Upload .alf file and download .ulf file.\n3. Press enter...')"
+
+
+.PHONY: alf
+alf:
+	# download alf file
+	podman run -v `pwd`:`pwd` \
+	           -w `pwd` \
+	           --rm ${IMG_NAME} \
+	           /opt/unity/Editor/Unity \
+	               -quit -batchmode -nographics -logFile \
+	               -createManualActivationFile || :
+
+
+.PHONY: up
+up:
+	podman run -e DISPLAY=$$DISPLAY \
+	           -v /tmp/.X11-unix:/tmp/.X11-unix \
+	           -v `xauth info | awk 'NR<=1{print $$3}'`:/home/docker/.Xauthority \
+	           -v `pwd`:`pwd` \
+	           -w `pwd` \
+	           --uidmap 1000:0:1 --uidmap 0:1:1000 --uidmap 1001:1001:$$((65536-1001)) \
+	           --gidmap 1000:0:1 --gidmap 0:1:1000 --gidmap 1001:1001:$$((65536-1001)) \
+	           --name tmp-tak0kada-unity-editor \
+	           -dt --rm tak0kada/unity-editor \
+	           /bin/bash
+
+
+.PHONY: unity
+unity:
+	podman exec -u docker:docker -it tmp-tak0kada-unity-editor /opt/unity/Editor/Unity
+
+
+.PHONY: down
+down:
+	podman container stop tmp-tak0kada-unity-editor
+
+
+.PHONY: clean
+clean:
+	rm -f Makefile Dockerfile
+	podman image rm tak0kada/unity-editor
