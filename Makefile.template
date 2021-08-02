@@ -48,7 +48,8 @@ unity:
 
 .PHONY: down
 down:
-	podman container stop tmp-tak0kada-unity-editor
+	podman container stop tmp-tak0kada-unity-editor || \
+	podman container rm tmp-tak0kada-unity-editor
 
 
 .PHONY: clean
