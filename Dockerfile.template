@@ -6,9 +6,9 @@ RUN useradd docker && \
 
 USER docker
 
-COPY *.ulf /home/docker/*.ulf
+COPY *.ulf /home/docker/${IMG_TAG}.ulf
 
 RUN cd /home/docker && \
     /opt/unity/Editor/Unity \
         -batchmode -nographics -quit -silent-crashes \
-        -manualLicenseFile /home/docker/*.ulf || :
+        -manualLicenseFile /home/docker/${IMG_TAG}.ulf || :
