@@ -32,8 +32,8 @@ up:
 	podman run -e DISPLAY=$$DISPLAY \
 	           -v /tmp/.X11-unix:/tmp/.X11-unix \
 	           -v `xauth info | awk 'NR<=1{print $$3}'`:/home/docker/.Xauthority \
-	           -v `pwd`:`pwd` \
-	           -w `pwd` \
+	           -v $${HOME}:$${HOME} \
+	           -w $${HOME} \
 	           --uidmap 1000:0:1 --uidmap 0:1:1000 --uidmap 1001:1001:$$((65536-1001)) \
 	           --gidmap 1000:0:1 --gidmap 0:1:1000 --gidmap 1001:1001:$$((65536-1001)) \
 	           --name tmp-tak0kada-${MY_IMG_NAME} \
