@@ -6,7 +6,7 @@ help:
 if_no_ulf = $(shell [ ! -f *.ulf ] && echo ulf)
 .PHONY: install
 install: $(if_no_ulf)
-	podman build . -t tak0kada/${MY_IMG_NAME}
+	podman build . -t tak0kada/${MY_IMG_TAG}
 
 
 if_no_alf = $(shell [ ! -f *.alf ] && echo alf)
@@ -36,23 +36,23 @@ up:
 	           -w $${HOME} \
 	           --uidmap 1000:0:1 --uidmap 0:1:1000 --uidmap 1001:1001:$$((65536-1001)) \
 	           --gidmap 1000:0:1 --gidmap 0:1:1000 --gidmap 1001:1001:$$((65536-1001)) \
-	           --name tmp-tak0kada-${MY_IMG_NAME} \
-	           -dt --rm tak0kada/${MY_IMG_NAME} \
+	           --name tmp-tak0kada-${MY_IMG_TAG} \
+	           -dt --rm tak0kada/${MY_IMG_TAG} \
 	           /bin/bash
 
 
 .PHONY: unity
 unity:
-	podman exec -u docker:docker -it tmp-tak0kada-${MY_IMG_NAME} /opt/unity/Editor/Unity
+	podman exec -u docker:docker -it tmp-tak0kada-${MY_IMG_TAG} /opt/unity/Editor/Unity
 
 
 .PHONY: down
 down:
-	podman container stop tmp-tak0kada-${MY_IMG_NAME} || \
-	podman container rm tmp-tak0kada-${MY_IMG_NAME}
+	podman container stop tmp-tak0kada-${MY_IMG_TAG} || \
+	podman container rm tmp-tak0kada-${MY_IMG_TAG}
 
 
 .PHONY: clean
 clean:
 	rm -f Makefile Dockerfile
-	podman image rm tak0kada/${MY_IMG_NAME}
+	podman image rm tak0kada/${MY_IMG_TAG}
