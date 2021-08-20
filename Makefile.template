@@ -43,7 +43,7 @@ up:
 
 .PHONY: unity
 unity:
-	podman exec -u docker:docker -it tmp-tak0kada-${MY_IMG_TAG} /opt/unity/Editor/Unity
+	podman exec -u docker:docker -it tmp-tak0kada-${MY_IMG_TAG} /opt/unity/Editor/Unity &
 
 
 .PHONY: down
